@@ -7,3 +7,5 @@ services:
     volumes:
       - .:/app
     working_dir: /app
+    ports:
+      - 3456:8080
