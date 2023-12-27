@@ -3,13 +3,13 @@ use futures::StreamExt;
 use rusqlite::{params};
 
 mod domain;
-use domain::Todo;
+use domain::entity::Todo;
 
 mod infrastructure;
-use infrastructure::init_db;
+use infrastructure::sqlite::init_db;
 
 mod util;
-use util::CustomError;
+use util::error::CustomError;
 
 #[post("/todos")]
 async fn create_todo(mut payload: web::Payload) -> Result<HttpResponse, CustomError> {
