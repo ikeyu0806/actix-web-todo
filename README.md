@@ -14,3 +14,9 @@ curl -X POST http://localhost:3456/todos \
   -H "Content-Type: application/json" \
   -d '{"title":"DemoTitle", "contents":"DemoContents"}'
 ```
+
+### sqlite
+```bash
+docker exec -it actix-web-todo_actix-web-todo_1 bash
+sqlite3 todo.db
+```
