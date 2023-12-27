@@ -1,20 +1,15 @@
 use actix_web::{post, web, App, HttpResponse, HttpServer};
 use futures::StreamExt;
-use serde::{Deserialize, Serialize};
 use rusqlite::{params};
 
-mod util;
-use util::CustomError;
+mod domain;
+use domain::Todo;
 
 mod infrastructure;
 use infrastructure::init_db;
 
-#[derive(Serialize, Deserialize)]
-struct Todo {
-    id: Option<i64>,
-    title: String,
-    contents: String,
-}
+mod util;
+use util::CustomError;
 
 #[post("/todos")]
 async fn create_todo(mut payload: web::Payload) -> Result<HttpResponse, CustomError> {
