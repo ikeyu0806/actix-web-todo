@@ -25,3 +25,11 @@ impl From<actix_web::error::PayloadError> for CustomError {
         }
     }
 }
+
+impl From<anyhow::Error> for CustomError {
+  fn from(error: anyhow::Error) -> Self {
+      CustomError {
+          message: error.to_string(),
+      }
+  }
+}
