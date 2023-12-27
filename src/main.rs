@@ -3,7 +3,6 @@ use futures::StreamExt;
 use serde::{Deserialize, Serialize};
 use rusqlite::{params};
 
-
 mod util;
 use util::CustomError;
 
@@ -35,11 +34,6 @@ async fn create_todo(mut payload: web::Payload) -> Result<HttpResponse, CustomEr
         })?;
 
     let conn = init_db()?;
-
-    println!("Value of todo.title: {}", todo.title);
-    println!("Value of &todo.title: {}", &todo.title);
-    println!("Value of todo.contents: {}", todo.contents);
-    println!("Value of &todo.contents: {}", &todo.contents);
 
     conn.execute(
         "INSERT INTO todos (title, contents) VALUES (?1, ?2)",
