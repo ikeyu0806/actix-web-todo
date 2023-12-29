@@ -2,9 +2,9 @@ use actix_web::{post, web, HttpResponse};
 use futures::StreamExt;
 use rusqlite::{params};
 
-use super::super::util::error::CustomError;
-use super::super::domain::entity::Todo;
-use super::super::infrastructure::sqlite::init_db;
+use super::super::super::util::error::CustomError;
+use super::super::super::domain::entity::Todo;
+use super::super::super::infrastructure::sqlite::init_db;
 
 #[post("/todos")]
 pub async fn create_todo(mut payload: web::Payload) -> Result<HttpResponse, CustomError> {

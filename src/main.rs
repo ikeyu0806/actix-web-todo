@@ -1,7 +1,7 @@
 use actix_web::{App, HttpServer};
 
 mod adapter;
-use adapter::todo_controller::create_todo;
+use adapter::controller::todo_controller::create_todo;
 mod domain;
 mod infrastructure;
 mod util;
