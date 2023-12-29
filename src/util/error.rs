@@ -33,3 +33,11 @@ impl From<anyhow::Error> for CustomError {
       }
   }
 }
+
+impl From<rusqlite::Error> for CustomError {
+    fn from(err: rusqlite::Error) -> Self {
+        CustomError {
+            message: format!("Database error: {}", err),
+        }
+    }
+}

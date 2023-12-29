@@ -23,14 +23,16 @@ pub async fn create_todo(mut payload: web::Payload) -> Result<HttpResponse, Cust
        message: format!("{}", err),
     })?;
 
-  let conn = init_db()?;
+  let mut conn = init_db()?;
 
-  conn.execute(
+  let transaction = conn.transaction()?;
+  transaction.execute(
     "INSERT INTO todos (title, contents) VALUES (?1, ?2)",
     params![&todo.title, &todo.contents],
   ).map_err(|err| CustomError {
     message: format!("Failed to insert todo into the database: {}", err),
   })?;
+  transaction.commit()?;
 
   Ok(HttpResponse::Ok().json(todo))
 }
