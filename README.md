@@ -6,6 +6,7 @@ docker-compose build
 docker-compose run actix-web-todo cargo init
 docker-compose run actix-web-todo cargo add actix-web
 docker-compose run actix-web-todo cargo add rusqlite
+docker-compose run actix-web-todo cargo add cargo-watch
 ```
 
 ### サンプルリクエスト
