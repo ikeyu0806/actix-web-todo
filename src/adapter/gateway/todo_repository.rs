@@ -28,3 +28,23 @@ impl TodoRepository for TodoRepositoryImpl {
   }
 }
 
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use super::super::super::super::domain::entity::Todo;
+
+  #[test]
+  fn test_insert_todo() {
+    let test_todo = Todo {
+      id: None,
+      title: String::from("Test Title"),
+      contents: String::from("Test Contents"),
+    };
+
+    let repo = TodoRepositoryImpl;
+
+    let result = repo.insert_todo(&test_todo);
+
+    assert!(result.is_ok(), "Failed to insert todo: {:?}", result.err());
+  }
+}
