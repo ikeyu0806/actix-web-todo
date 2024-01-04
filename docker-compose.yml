@@ -4,8 +4,15 @@ services:
   actix-web-todo:
     build:
       context: .
-    volumes:
-      - .:/app
     working_dir: /app
     ports:
       - 3456:8080
+    volumes:
+      - .:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - target-cache:/app/target
+    command: /bin/sh -c "cargo watch -x run"
+
+volumes:
+  cargo-cache:
+  target-cache:

@@ -22,7 +22,7 @@ pub async fn create_todo(
 
   let todo = serde_json::from_slice::<Todo>(&body)
     .map_err(|err| CustomError {
-        message: format!("{}", err),
+      message: format!("{}", err),
     })?;
 
   match todo_repo.insert_todo(&todo) {
