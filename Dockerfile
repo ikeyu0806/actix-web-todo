@@ -4,6 +4,7 @@ WORKDIR /app
 COPY . .
 
 RUN cargo install cargo-watch
+RUN rustup component add rustfmt
 
 RUN apt-get update \
   && apt-get upgrade -y \
