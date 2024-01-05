@@ -38,6 +38,9 @@ impl TodoRepository for MockTodoRepository {
   fn insert_todo(&self, _todo: &Todo) -> Result<(), CustomError> {
     Ok(())
   }
+  fn select_todo(&self, _todo_id: i32) -> Result<Option<Todo>, CustomError> {
+    Ok(None)
+  }
 }
 
 #[actix_rt::test]
