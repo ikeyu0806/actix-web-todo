@@ -11,9 +11,13 @@ docker-compose run actix-web-todo cargo add cargo-watch
 
 ### サンプルリクエスト
 ```
+# Todo作成
 curl -X POST http://localhost:3456/todos \
   -H "Content-Type: application/json" \
   -d '{"title":"DemoTitle", "contents":"DemoContents"}'
+
+# Todo取得
+curl http://localhost:3456/todos/1
 ```
 
 ### sqlite
