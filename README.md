@@ -18,6 +18,11 @@ curl -X POST http://localhost:3456/todos \
 
 # Todo取得
 curl http://localhost:3456/todos/1
+
+# Todo更新
+curl -X POST http://localhost:3456/todos/1 \
+  -H "Content-Type: application/json" \
+  -d '{"title":"UpdateTitle", "contents":"UpdateContents"}'
 ```
 
 ### sqlite

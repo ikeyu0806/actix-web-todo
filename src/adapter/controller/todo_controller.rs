@@ -33,15 +33,48 @@ pub async fn create_todo(
 
 #[get("/todos/{id}")]
 pub async fn get_todo(
-    todo_id: Path<i32>,
-    todo_repo: Data<Arc<dyn TodoRepository + Send + Sync>>,
+  todo_id: Path<i32>,
+  todo_repo: Data<Arc<dyn TodoRepository + Send + Sync>>,
 ) -> Result<HttpResponse, CustomError> {
-    let result = todo_repo.select_todo(todo_id.into_inner());
-    match result {
-        Ok(Some(todo)) => Ok(HttpResponse::Ok().json(todo)),
-        Ok(None) => Ok(HttpResponse::NotFound().body("Todo not found")),
-        Err(err) => Err(err),
-    }
+  let result = todo_repo.select_todo(todo_id.into_inner());
+  match result {
+    Ok(Some(todo)) => Ok(HttpResponse::Ok().json(todo)),
+    Ok(None) => Ok(HttpResponse::NotFound().body("Todo not found")),
+    Err(err) => Err(err),
+  }
+}
+
+#[post("/todos/{id}")]
+pub async fn update_todo(
+  todo_id: Path<i32>,
+  mut payload: web::Payload,
+  todo_repo: Data<Arc<dyn TodoRepository + Send + Sync>>,
+) -> Result<HttpResponse, CustomError> {
+  let mut body = web::BytesMut::new();
+  while let Some(chunk) = payload.next().await {
+    let chunk = match chunk {
+      Ok(chunk) => chunk,
+      Err(err) => return Err(err.into()),
+    };
+
+    body.extend_from_slice(&chunk);
+  }
+
+  let todo = serde_json::from_slice::<Todo>(&body)
+    .map_err(|err| CustomError {
+        message: format!("{}", err),
+    })?;
+
+  let updated_todo = Todo {
+    id: Some(todo_id.into_inner().into()),
+    title: todo.title,
+    contents: todo.contents,
+  };
+
+  match todo_repo.update_todo(&updated_todo) {
+    Ok(_) => Ok(HttpResponse::Ok().json(updated_todo)),
+    Err(err) => Err(err),
+  }
 }
 
 struct MockTodoRepository;
@@ -101,5 +134,30 @@ async fn test_get_todo() {
 
   let response = test::call_service(&app, request).await;
  
+  assert!(response.status().is_success());
+}
+
+#[actix_rt::test]
+async fn test_update_todo() {
+  let todo_repo: Data<Arc<dyn TodoRepository + Send + Sync>> = Data::new(Arc::new(MockTodoRepository));
+
+  let app = test::init_service(
+    App::new()
+      .app_data(todo_repo.clone())
+      .service(update_todo),
+  )
+  .await;
+
+  let request = test::TestRequest::post()
+    .uri("/todos/1")
+    .set_json(&Todo {
+      id: Some(1),
+      title: String::from("Updated Title"),
+      contents: String::from("Updated Contents"),
+    })
+    .to_request();
+
+  let response = test::call_service(&app, request).await;
+
   assert!(response.status().is_success());
 }
