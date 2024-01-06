@@ -58,6 +58,9 @@ impl TodoRepository for MockTodoRepository {
       contents: String::from("Test Contents"),
     }))
   }
+  fn update_todo(&self, _todo: &Todo) -> Result<(), CustomError> {
+    Ok(())
+  }
 }
 
 #[actix_rt::test]

@@ -6,6 +6,7 @@ use rusqlite::{params};
 pub trait TodoRepository {
   fn insert_todo(&self, todo: &Todo) -> Result<(), CustomError>;
   fn select_todo(&self, todo_id: i32) -> Result<Option<Todo>, CustomError>;
+  fn update_todo(&self, todo: &Todo) -> Result<(), CustomError>;
 }
 
 pub struct TodoRepositoryImpl;
@@ -43,7 +44,24 @@ impl TodoRepository for TodoRepositoryImpl {
     } else {
       Ok(None)
     }
-}
+  }
+
+  fn update_todo(&self, todo: &Todo) -> Result<(), CustomError> {
+    let mut conn = init_db()?;
+
+    let transaction = conn.transaction()?;
+    transaction
+      .execute(
+        "UPDATE todos SET title = ?1, contents = ?2 WHERE id = ?3",
+        params![&todo.title, &todo.contents, &todo.id],
+      )
+      .map_err(|err| CustomError {
+        message: format!("Failed to update todo in the database: {}", err),
+      })?;
+    transaction.commit()?;
+
+    Ok(())
+  }
 }
 
 #[cfg(test)]
@@ -66,5 +84,14 @@ mod tests {
 
     let selected_todo_result = repo.select_todo(1);
     assert!(selected_todo_result.is_ok(), "Failed to select todo: {:?}", selected_todo_result.err());
+
+    let updated_todo = Todo {
+      id: None,
+      title: String::from("TeUpdatedst Title"),
+      contents: String::from("Updated Contents"),
+    };
+  
+    let update_result = repo.update_todo(&updated_todo);
+    assert!(update_result.is_ok(), "Failed to update todo: {:?}", update_result.err());
   }
 }
