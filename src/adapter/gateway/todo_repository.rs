@@ -7,6 +7,7 @@ pub trait TodoRepository {
   fn insert_todo(&self, todo: &Todo) -> Result<(), CustomError>;
   fn select_todo(&self, todo_id: i32) -> Result<Option<Todo>, CustomError>;
   fn update_todo(&self, todo: &Todo) -> Result<(), CustomError>;
+  fn delete_todo(&self, todo_id: i32) -> Result<(), CustomError>;
 }
 
 pub struct TodoRepositoryImpl;
@@ -62,6 +63,24 @@ impl TodoRepository for TodoRepositoryImpl {
 
     Ok(())
   }
+
+  fn delete_todo(&self, todo_id: i32) -> Result<(), CustomError> {
+    let mut conn = init_db()?;
+
+    let transaction = conn.transaction()?;
+    transaction
+      .execute(
+        "DELETE FROM todos WHERE id = ?1",
+        params![todo_id],
+      )
+      .map_err(|err| CustomError {
+        message: format!("Failed to delete todo from the database: {}", err),
+      })?;
+    transaction.commit()?;
+
+    Ok(())
+  }
+
 }
 
 #[cfg(test)]

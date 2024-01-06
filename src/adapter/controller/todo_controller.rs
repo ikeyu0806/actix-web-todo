@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use actix_web::{get, post, web, test, App, HttpResponse, web::{Data, Path}};
+use actix_web::{get, post, delete, web, test, App, HttpResponse, web::{Data, Path}};
 use futures::StreamExt;
 use super::super::super::util::error::CustomError;
 use super::super::super::domain::entity::Todo;
@@ -77,6 +77,17 @@ pub async fn update_todo(
   }
 }
 
+#[delete("/todos/{id}")]
+pub async fn delete_todo(
+  todo_id: Path<i32>,
+  todo_repo: Data<Arc<dyn TodoRepository + Send + Sync>>,
+) -> Result<HttpResponse, CustomError> {
+  match todo_repo.delete_todo(todo_id.into_inner().into()) {
+    Ok(_) => Ok(HttpResponse::Ok().body("Todo deleted")),
+    Err(err) => Err(err),
+  }
+}
+
 struct MockTodoRepository;
 
 #[async_trait::async_trait]
@@ -92,6 +103,9 @@ impl TodoRepository for MockTodoRepository {
     }))
   }
   fn update_todo(&self, _todo: &Todo) -> Result<(), CustomError> {
+    Ok(())
+  }
+  fn delete_todo(&self, _todo_id: i32) -> Result<(), CustomError> {
     Ok(())
   }
 }
@@ -155,6 +169,26 @@ async fn test_update_todo() {
       title: String::from("Updated Title"),
       contents: String::from("Updated Contents"),
     })
+    .to_request();
+
+  let response = test::call_service(&app, request).await;
+
+  assert!(response.status().is_success());
+}
+
+#[actix_rt::test]
+async fn test_delete_todo() {
+  let todo_repo: Data<Arc<dyn TodoRepository + Send + Sync>> = Data::new(Arc::new(MockTodoRepository));
+
+  let app = test::init_service(
+    App::new()
+      .app_data(todo_repo.clone())
+      .service(delete_todo),
+  )
+  .await;
+
+  let request = test::TestRequest::delete()
+    .uri("/todos/1")
     .to_request();
 
   let response = test::call_service(&app, request).await;

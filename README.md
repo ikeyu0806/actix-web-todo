@@ -23,6 +23,9 @@ curl http://localhost:3456/todos/1
 curl -X POST http://localhost:3456/todos/1 \
   -H "Content-Type: application/json" \
   -d '{"title":"UpdateTitle", "contents":"UpdateContents"}'
+
+# Todo削除
+curl -X DELETE http://localhost:3456/todos/1
 ```
 
 ### sqlite

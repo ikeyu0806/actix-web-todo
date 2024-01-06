@@ -2,9 +2,7 @@ use std::sync::Arc;
 use actix_web::{middleware::Logger, App, HttpServer, web::{Data}};
 
 mod adapter;
-use adapter::controller::todo_controller::create_todo;
-use adapter::controller::todo_controller::get_todo;
-use adapter::controller::todo_controller::update_todo;
+use adapter::controller::todo_controller::*;
 use adapter::gateway::todo_repository::{TodoRepositoryImpl, TodoRepository};
 mod domain;
 mod infrastructure;
@@ -20,6 +18,7 @@ async fn main() -> std::io::Result<()> {
       .service(create_todo)
       .service(get_todo)
       .service(update_todo)
+      .service(delete_todo)
       .wrap(Logger::default())
   })
   .bind(("0.0.0.0", 8080))?
