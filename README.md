@@ -25,3 +25,8 @@ curl http://localhost:3456/todos/1
 docker exec -it actix-web-todo_actix-web-todo_1 bash
 sqlite3 todo.db
 ```
+
+### テスト実行
+```
+docker-compose run actix-web-todo cargo test
+```

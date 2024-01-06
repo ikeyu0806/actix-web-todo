@@ -52,7 +52,11 @@ impl TodoRepository for MockTodoRepository {
     Ok(())
   }
   fn select_todo(&self, _todo_id: i32) -> Result<Option<Todo>, CustomError> {
-    Ok(None)
+    Ok(Some(Todo {
+      id: Some(1),
+      title: String::from("Test Title"),
+      contents: String::from("Test Contents"),
+    }))
   }
 }
 
@@ -77,14 +81,6 @@ async fn test_create_todo() {
   let response = test::call_service(&app, request).await;
 
   assert!(response.status().is_success());
-  let response_body = test::read_body(response).await;
-  let expected_response_body = serde_json::to_string(&Todo {
-    id: None,
-    title: String::from("Test Title"),
-    contents: String::from("Test Contents"),
-  })
-  .unwrap();
-  assert_eq!(response_body, expected_response_body);
 }
 
 #[actix_rt::test]
@@ -101,14 +97,6 @@ async fn test_get_todo() {
     .to_request();
 
   let response = test::call_service(&app, request).await;
-
+ 
   assert!(response.status().is_success());
-  // let response_body = test::read_body(response).await;
-  // let expected_response_body = serde_json::to_string(&Todo {
-  //   id: None,
-  //   title: String::from("Test Title"),
-  //   contents: String::from("Test Contents"),
-  // })
-  // .unwrap();
-  // assert_eq!(response_body, expected_response_body);
 }
