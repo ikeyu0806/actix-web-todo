@@ -1,8 +1,8 @@
 use std::sync::Arc;
 use actix_web::{get, post, delete, web, test, App, HttpResponse, web::{Data, Path}};
 use futures::StreamExt;
-use super::super::super::util::error::CustomError;
-use super::super::super::domain::entity::Todo;
+use crate::util::error::CustomError;
+use crate::domain::entity::Todo;
 use super::super::gateway::todo_repository::TodoRepository;
 
 #[post("/todos")]

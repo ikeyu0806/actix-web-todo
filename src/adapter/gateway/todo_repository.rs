@@ -1,6 +1,6 @@
-use super::super::super::domain::entity::Todo;
-use super::super::super::util::error::CustomError;
-use super::super::super::infrastructure::sqlite::init_db;
+use crate::domain::entity::Todo;
+use crate::util::error::CustomError;
+use crate::infrastructure::sqlite::init_db;
 use rusqlite::{params};
 
 pub trait TodoRepository {
@@ -86,7 +86,7 @@ impl TodoRepository for TodoRepositoryImpl {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use super::super::super::super::domain::entity::Todo;
+  use crate::super::domain::entity::Todo;
 
   #[test]
   fn test_todo_repo() {
