@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use actix_web::{get, post, delete, web, test, App, HttpResponse, web::{Data, Path}};
 use futures::StreamExt;
-use crate::util::error::CustomError;
+use crate::custom_error::CustomError;
 use crate::domain::entity::Todo;
 use super::super::gateway::todo_repository::TodoRepository;
 

@@ -1,5 +1,5 @@
 use crate::domain::entity::Todo;
-use crate::util::error::CustomError;
+use crate::custom_error::CustomError;
 use crate::infrastructure::sqlite::init_db;
 use rusqlite::{params};
 

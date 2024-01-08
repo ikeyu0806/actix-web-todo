@@ -6,7 +6,7 @@ use adapter::controller::todo_controller::*;
 use adapter::gateway::todo_repository::{TodoRepositoryImpl, TodoRepository};
 mod domain;
 mod infrastructure;
-mod util;
+mod custom_error;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
